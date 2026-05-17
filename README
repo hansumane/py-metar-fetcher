@@ -1,0 +1,9 @@
+py-metar-fetcher
+
+fetches METARs from aviationweather.gov
+and prints them in a user-friendly way
+
+TODO:
+* CLI arguments
+  * --verbose or --verbose=raw
+  * --timezone="UTC"
