@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
+import os
 import re
 import sys
 import json
 import math
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -27,7 +29,7 @@ def get_metar(airports: list[str], verbose=None) -> list[dict[str, Any]]:
         with urllib.request.urlopen(req) as resp:
             metars = json.load(resp)
     except urllib.error.HTTPError as e:
-        print(f"Failed API Request: {e}")
+        print(f"Failed API Request: {e}", file=sys.stderr, end=f"{os.linesep * 2}")
         return []
 
     if verbose is True:
@@ -180,9 +182,25 @@ class Metar:
 
 
 def main(airports: list[str]):
-    verbose = "RAW"
-    for metar in get_metar(airports, verbose=verbose):
-        print(str(Metar(metar["rawOb"])))
+    verbose = None
+    processed_raw_metars = set()
+    while True:
+        new_processed_metars = []
+        while len(metars := get_metar(airports, verbose=verbose)) != len(airports):
+            pass
+        for metar in metars:
+            raw_metar = metar["rawOb"]
+            if raw_metar not in processed_raw_metars:
+                new_processed_metars.append(raw_metar)
+                print(f"DEBUG: {raw_metar}")
+        if len(new_processed_metars) > 0:
+            print()
+        for raw_metar in new_processed_metars:
+            print(str(Metar(raw_metar)))
+            processed_raw_metars.add(raw_metar)
+        if len(new_processed_metars) > 0:
+            print()
+        time.sleep(2 * 60)
 
 
 if __name__ == "__main__":
