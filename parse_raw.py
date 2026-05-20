@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os
-import re
 import sys
 import json
 import math
@@ -11,6 +10,12 @@ import urllib.parse
 import urllib.request
 
 from typing import Any
+
+try:
+    import re2 as re
+except ImportError:
+    import re
+    print("Warning: Using 're' instead of 'pyre2'", file=sys.stderr, end=f"{os.linesep * 2}")
 
 
 def get_metar(airports: list[str], verbose=None) -> list[dict[str, Any]]:
