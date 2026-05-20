@@ -101,6 +101,7 @@ def fmt_wind_dir(_wdir: str, wspd: int) -> tuple[str, str]:
     raise ValueError(f"{wdir = } is wrong")
 
 
+wxs = "VC|RE|MI|PR|BC|DR|BL|SH|TS|FZ|DZ|RA|SN|SG|GS|GR|PL|IC|UP|FG|BR|HZ|VA|DU|FU|SA|PY|SQ|PO|DS|SS|FC"
 metar_regex = re.compile(r"^" +
     r"(METAR|SPECI)" +
     r"\s+([A-Z]{4})" +
@@ -109,7 +110,7 @@ metar_regex = re.compile(r"^" +
     r"\s+(\d{3}|VRB)(\d{2})(?:G(\d{2}))?(MPS|KT)" +
     r"(?:\s+(\d{3})V(\d{3}))?" +
     r"(?:\s+(\d{4}|(?:\d{1,2}\s+)?\d{1,2}(?:\/[24])?SM))?" +
-    r"(?:\s+([\-\+]?(?:VC|RE|MI|PR|BC|DR|BL|SH|TS|FZ|DZ|RA|SN|SG|GS|GR|PL|IC|UP|FG|BR|HZ|VA|DU|FU|SA|PY|SQ|PO|DS|SS|FC)+))?" +
+   rf"(?:\s+((?:[\-\+]?(?:{wxs}){{1,2}})?(?:\s*\b(?:{wxs}))*))?" +
     r"(?:\s+((?:\s*(?:(?:FEW|SCT|BKN|OVC)(?:\d{3}(?:TCU|CB)?(?:\/+)?|\/{3})|\/{2}))+|(?:VV\d{3})|CAVOK|SKC|NCD|CLR|NSC))" +
     r"\s+(?:(M?)(\d{2})\/(M?)(\d{2}))" +
     r"\s+(?:(Q|A)(\d{4}))" +
