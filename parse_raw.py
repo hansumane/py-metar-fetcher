@@ -112,7 +112,8 @@ metar_regex = re.compile(r"^" +
     r"(?:\s+([\-\+]?(?:VC|RE|MI|PR|BC|DR|BL|SH|TS|FZ|DZ|RA|SN|SG|GS|GR|PL|IC|UP|FG|BR|HZ|VA|DU|FU|SA|PY|SQ|PO|DS|SS|FC)+))?" +
     r"(?:\s+((?:\s*(?:FEW|SCT|BKN|OVC)\d{3}(?:TCU|CB)?)+|(?:VV\d{3})|CAVOK|SKC|NCD|CLR|NSC))" +
     r"\s+(?:(M?)(\d{2})\/(M?)(\d{2}))" +
-    r"\s+(?:(Q|A)(\d{4}))")
+    r"\s+(?:(Q|A)(\d{4}))" +
+    r"(?:\s+(WS\s+R\d{1,2}[LCR]?))?")
 
 
 def metar_parse(metar: str) -> tuple[str, ...]:
@@ -155,6 +156,8 @@ class Metar:
 
         self.__altunit = parsed[18]
         self.__altval = parsed[19]
+
+        # self.___ws = parsed[20]
 
     @property
     def raw(self) -> str:
