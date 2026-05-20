@@ -117,6 +117,7 @@ metar_regex = re.compile(r"^" +
     r"\s+(\d{3}|VRB)(\d{2})(?:G(\d{2}))?(MPS|KT)" +
     r"(?:\s+(\d{3})V(\d{3}))?" +
     r"(?:\s+(\d{4}|(?:\d{1,2}\s+)?\d{1,2}(?:\/[24])?SM))?" +
+    r"(?:\s+((?:\s*R\d{1,2}[LCR]?\/[MP]?\d{4}(?:V\d{4})?[DNU]?)+))?" +
    rf"(?:\s+((?:[\-\+]?(?:{wxs}){{1,2}})?(?:\s*\b(?:{wxs}))*))?" +
     r"\s+((?:\s*(?:(?:FEW|SCT|BKN|OVC|VV)(?:\d{3}(?:TCU|CB)?(?:\/{3})?|\/{3})|\/{2}|CAVOK|SKC|NCD|CLR|NSC))+)" +
     r"\s+(?:(M?)(\d{2})\/(M?)(\d{2}))" +
@@ -155,17 +156,18 @@ class Metar:
             self.__wspd *= 2
 
         # self.___vis = parsed[11]  # 4-digit int or 1-2-digit int with "SM"
-        self.___wxstr = parsed[12]
-        self.___clouds = parsed[13]
+        # self.___rvr = parsed[12]
+        self.___wxstr = parsed[13]
+        self.___clouds = parsed[14]
 
-        self.__tc = (-1 if parsed[14] == "M" else 1) * int(parsed[15])
-        self.__tdc = (-1 if parsed[16] == "M" else 1) * int(parsed[17])
+        self.__tc = (-1 if parsed[15] == "M" else 1) * int(parsed[16])
+        self.__tdc = (-1 if parsed[17] == "M" else 1) * int(parsed[18])
         self.__humid = calc_humid(self.__tc, self.__tdc)
 
-        self.__altunit = parsed[18]
-        self.__altval = parsed[19]
+        self.__altunit = parsed[19]
+        self.__altval = parsed[20]
 
-        # self.___ws = parsed[20]
+        # self.___ws = parsed[21]
 
     @property
     def raw(self) -> str:
