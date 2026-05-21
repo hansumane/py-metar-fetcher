@@ -117,9 +117,9 @@ metar_regex = re.compile(r"^" +
     r"\s+(\d{3}|VRB)(\d{2})(?:G(\d{2}))?(MPS|KT)" +
     r"(?:\s+(\d{3})V(\d{3}))?" +
     r"(?:\s+(\d{4}(?:\s+\d{4}(?:N|NE|E|SE|S|SW|W|NW))*|(?:\d{1,2}\s+)?\d{1,2}(?:\/[24])?SM))?" +
-    r"(?:\s+((?:\s*R\d{1,2}[LCR]?\/[MP]?\d{4}(?:V\d{4})?[DNU]?)+))?" +
-   rf"(?:\s+((?:[\-\+]?(?:{wxs}){{1,2}})?(?:\s*\b(?:{wxs}))*))?" +
-    r"\s+((?:\s*(?:(?:FEW|SCT|BKN|OVC|VV)(?:\d{3}(?:TCU|CB)?(?:\/{3})?|\/{3})|\/{2}|CAVOK|SKC|NCD|CLR|NSC))+)" +
+    r"((?:\s+R\d{1,2}[LCR]?\/[MP]?\d{4}(?:V\d{4})?[DNU]?)*)" +
+   rf"((?:\s+[\-\+]?(?:{wxs}){{1,2}})*)" +
+    r"((?:\s+(?:(?:FEW|SCT|BKN|OVC|VV)(?:\d{3}(?:TCU|CB)?(?:\/{3})?|\/{3})|\/{2}|CAVOK|SKC|NCD|CLR|NSC))*)" +
     r"\s+(?:(M?)(\d{2})\/(M?)(\d{2}))" +
     r"\s+(?:(Q|A)(\d{4}))" +
     r"(?:\s+(WS\s+R\d{1,2}[LCR]?))?")
@@ -156,9 +156,9 @@ class Metar:
             self.__wspd *= 2
 
         # self.___vis = parsed[11]
-        # self.___rvr = parsed[12]
-        self.___wxstr = parsed[13]
-        self.___clouds = parsed[14]
+        # self.___rvr = parsed[12].lstrip()
+        self.___wxstr = parsed[13].lstrip()
+        self.___clouds = parsed[14].lstrip()
 
         self.__tc = (-1 if parsed[15] == "M" else 1) * int(parsed[16])
         self.__tdc = (-1 if parsed[17] == "M" else 1) * int(parsed[18])
