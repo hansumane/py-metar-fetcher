@@ -110,18 +110,31 @@ def fmt_wind_dir(_wdir: str, wspd: int) -> tuple[str, str]:
 
 wxs = "VC|RE|MI|PR|BC|DR|BL|SH|TS|FZ|DZ|RA|SN|SG|GS|GR|PL|IC|UP|FG|BR|HZ|VA|DU|FU|SA|PY|SQ|PO|DS|SS|FC"
 metar_regex = re.compile(r"^" +
+    # [0] => type
     r"(METAR|SPECI)" +
+    # [1] => icao
     r"\s+([A-Z]{4})" +
+    # [2,3,4] => UTC day, hour, minutes
     r"\s+(\d{2})(\d{2})(\d{2})Z" +
+    # [ ] => auto metar flag (not used)
     r"(?:\s+AUTO)?" +
+    # [5,6,7?,8] => wind direction, speed, gusts, units
     r"\s+(\d{3}|VRB)(\d{2})(?:G(\d{2}))?(MPS|KT)" +
+    # [9?,10?] => variable wind directions
     r"(?:\s+(\d{3})V(\d{3}))?" +
+    # [11?] => visibility
     r"(?:\s+(\d{4}(?:\s+\d{4}(?:N|NE|E|SE|S|SW|W|NW))*|(?:\d{1,2}\s+)?\d{1,2}(?:\/[24])?SM))?" +
+    # [12?] => RVR string
     r"((?:\s+R\d{1,2}[LCR]?\/[MP]?\d{4}(?:V\d{4})?[DNU]?)*)" +
+    # [13?] => weather string
    rf"((?:\s+[\-\+]?(?:{wxs}){{1,2}})*)" +
+    # [14?] => cloud string
     r"((?:\s+(?:(?:FEW|SCT|BKN|OVC|VV)(?:\d{3}(?:TCU|CB)?(?:\/{3})?|\/{3})|\/{2}|CAVOK|SKC|NCD|CLR|NSC))*)" +
+    # [15?,16,17?,18] => temperature and dew point
     r"\s+(?:(M?)(\d{2})\/(M?)(\d{2}))" +
+    # [19, 20] => pressure
     r"\s+(?:(Q|A)(\d{4}))" +
+    # [21?] => windshear
     r"(?:\s+(WS\s+R\d{1,2}[LCR]?))?")
 
 
