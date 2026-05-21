@@ -116,25 +116,25 @@ metar_regex = re.compile(r"^" +
     r"\s+([A-Z]{4})" +
     # [2,3,4] => UTC day, hour, minutes
     r"\s+(\d{2})(\d{2})(\d{2})Z" +
-    # [ ] => auto metar flag (not used)
-    r"(?:\s+AUTO)?" +
-    # [5,6,7?,8] => wind direction, speed, gusts, units
+    # [5] => auto metar flag (not used)
+    r"(?:\s+(AUTO))?" +
+    # [6,7,8?,9] => wind direction, speed, gusts, units
     r"\s+(\d{3}|VRB)(\d{2})(?:G(\d{2}))?(MPS|KT)" +
-    # [9?,10?] => variable wind directions
+    # [10?,11?] => variable wind directions
     r"(?:\s+(\d{3})V(\d{3}))?" +
-    # [11?] => visibility
+    # [12?] => visibility
     r"(?:\s+(\d{4}(?:\s+\d{4}(?:N|NE|E|SE|S|SW|W|NW))*|(?:\d{1,2}\s+)?\d{1,2}(?:\/[24])?SM))?" +
-    # [12?] => RVR string
+    # [13?] => RVR string
     r"((?:\s+R\d{1,2}[LCR]?\/[MP]?\d{4}(?:V\d{4})?[DNU]?)*)" +
-    # [13?] => weather string
+    # [14?] => weather string
    rf"((?:\s+[\-\+]?(?:{wxs})+)*)" +
-    # [14?] => cloud string
+    # [15?] => cloud string
     r"((?:\s+(?:(?:FEW|SCT|BKN|OVC|VV)(?:\d{3}(?:TCU|CB)?(?:\/{3})?|\/{3})|\/{2}|CAVOK|SKC|NCD|CLR|NSC))*)" +
-    # [15?,16,17?,18] => temperature and dew point
+    # [16?,17,18?,19] => temperature and dew point
     r"\s+(?:(M?)(\d{2})\/(M?)(\d{2}))" +
-    # [19, 20] => pressure
+    # [20, 21] => pressure
     r"\s+(?:(Q|A)(\d{4}))" +
-    # [21?] => windshear
+    # [22?] => windshear
     r"(?:\s+(WS\s+R\d{1,2}[LCR]?))?")
 
 
@@ -159,39 +159,41 @@ class Metar:
         self.__type = parsed[0]
         self.__icao = parsed[1]
         self.__datetime = (int(parsed[2]), int(parsed[3]), int(parsed[4]))
+        self.___auto = parsed[5]
 
-        self.__wdir = parsed[5]       # 3-digit int or "VRB"
-        self.__wspd = int(parsed[6])  # 2-digit int
-        # self.___wgust = parsed[7]   # 2-digit int or
-        self.__wunit = parsed[8]      # "MPS" or "KT"
-        # self.___wdir_var = (int(parsed[9]), int(parsed[10]))
+        self.__wdir = parsed[6]       # 3-digit int or "VRB"
+        self.__wspd = int(parsed[7])  # 2-digit int
+        # self.___wgust = parsed[8]   # 2-digit int or
+        self.__wunit = parsed[9]      # "MPS" or "KT"
+        # self.___wdir_var = (int(parsed[10]), int(parsed[11]))
         if self.__wunit == "MPS":
             self.__wspd *= 2
 
-        # self.___vis = parsed[11]
-        # self.___rvr = parsed[12].lstrip()
-        self.___wxstr = parsed[13].lstrip()
-        self.___clouds = parsed[14].lstrip()
+        # self.___vis = parsed[12]
+        # self.___rvr = parsed[13].lstrip()
+        self.___wxstr = parsed[14].lstrip()
+        self.___clouds = parsed[15].lstrip()
 
-        self.__tc = (-1 if parsed[15] == "M" else 1) * int(parsed[16])
-        self.__tdc = (-1 if parsed[17] == "M" else 1) * int(parsed[18])
+        self.__tc = (-1 if parsed[16] == "M" else 1) * int(parsed[17])
+        self.__tdc = (-1 if parsed[18] == "M" else 1) * int(parsed[19])
         self.__humid = calc_humid(self.__tc, self.__tdc)
 
-        self.__altunit = parsed[19]
-        self.__altval = parsed[20]
+        self.__altunit = parsed[20]
+        self.__altval = parsed[21]
 
-        # self.___ws = parsed[21]
+        # self.___ws = parsed[22]
 
     @property
     def raw(self) -> str:
         return self.__raw
 
     def __str__(self) -> str:
+        auto = "A" if self.___auto else " "
         wd, wi = fmt_wind_dir(self.__wdir, self.__wspd)
         humid = 99.0 if self.__humid >= 99.0 else self.__humid
         wx = " " + self.___wxstr if self.___wxstr else self.___wxstr
         clouds = " " + self.___clouds if self.___clouds else self.___clouds
-        return (f"[{self.__type[0]}] {self.__icao} day {self.__datetime[0]:02d} at {self.__datetime[1]:02d}:{self.__datetime[2]:02d} UTC: " +
+        return (f"[{self.__type[0]}{auto}] {self.__icao} day {self.__datetime[0]:02d} at {self.__datetime[1]:02d}:{self.__datetime[2]:02d} UTC: " +
                 f"{wd} {wi} {self.__wspd:<2d} " +
                 f"{self.__tc:+03d}/{self.__tdc:+03d} {humid:2.0f}% " +
                 f"{self.__altunit}{self.__altval}" +
