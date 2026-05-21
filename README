@@ -1,9 +1,12 @@
 py-metar-fetcher
 
-fetches METARs from aviationweather.gov
-and prints them in a user-friendly way
+fetches raw METARs from aviationweather.gov
+parses them into Metar objects and
+prints them in a user-friendly way
 
 TODO:
 * CLI arguments
-  * --verbose or --verbose=raw
+  * --verbose
   * --timezone="UTC"
+* Further parsing
+  * ... Q1013 | RETS | WS R06R WS R06C | R06R/CLRD62 R06C/CLRD62 | NOSIG / TEMPO VRB05G10MPS 5000 -TSRA HZ BKN044CB
