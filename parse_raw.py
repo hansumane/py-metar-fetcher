@@ -216,7 +216,10 @@ def main(airports: list[str]):
         if len(new_processed_metars) > 0:
             print()
         for raw_metar in new_processed_metars:
-            print(str(Metar(raw_metar)))
+            try:
+                print(str(Metar(raw_metar)))
+            except ValueError as e:
+                print(f"ERROR: {e}")
             processed_raw_metars.add(raw_metar)
         if len(new_processed_metars) > 0:
             print()
