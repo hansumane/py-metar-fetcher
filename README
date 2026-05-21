@@ -10,3 +10,38 @@ TODO:
   * --timezone="UTC"
 * Further parsing
   * ... Q1013 | RETS | WS R06R WS R06C | R06R/CLRD62 R06C/CLRD62 | NOSIG / TEMPO VRB05G10MPS 5000 -TSRA HZ BKN044CB
+
+Intensity       -    Light intensity
+Intensity       +    Heavy intensity
+Descriptor      VC   In the vicinity (5–10 mi / 8–16 km from station)
+Descriptor      RE   Recent hour's most important past phenomenon with residues
+Descriptor      MI   Fog descriptor: Shallow [French: Mince]
+Descriptor      PR   Fog descriptor: Partial
+Descriptor      BC   Fog descriptor: Patches [French: Bancs]
+Descriptor      DR   Low drifting below eye level
+Descriptor      BL   Blowing at or above eye level
+Descriptor*     SH   Showers
+Descriptor*     TS   Thunderstorm
+Descriptor      FZ   Freezing
+Precipitation   DZ   Drizzle
+Precipitation   RA   Rain
+Precipitation   SN   Snow (snowflakes)
+Precipitation   SG   Snow grains
+Precipitation   GS   Graupel [French: Grésil] (hail < 5mm, not in the US)
+Precipitation   GR   Hail [French: Grêle] (hail >= 5mm, any hail in the US)
+Precipitation   PL   Ice pellets
+Precipitation   IC   Ice crystals
+Precipitation   UP   Unknown precipitation
+Obscuration     FG   Fog (visibility less than 1 km)
+Obscuration     BR   Mist [French: Brume] (water droplets, visibility between 1 and 5 km)
+Obscuration     HZ   Haze (dry particulates, visibility between 1 and 5 km)
+Obscuration     VA   Volcanic ash
+Obscuration     DU   Widespread dust
+Obscuration     FU   Smoke [French: Fumée]
+Obscuration     SA   Sand
+Obscuration     PY   Spray, only coded as BLPY
+Other           SQ   Squall
+Other           PO   Dust [French: Poussière] or sand whirls
+Other           DS   Duststorm
+Other           SS   Sandstorm
+Other           FC   Funnel cloud
