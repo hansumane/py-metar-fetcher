@@ -189,13 +189,13 @@ class Metar:
     def __str__(self) -> str:
         wd, wi = fmt_wind_dir(self.__wdir, self.__wspd)
         humid = 99.0 if self.__humid >= 99.0 else self.__humid
-        clouds = " " + self.___clouds if self.___clouds else self.___clouds
         wx = " " + self.___wxstr if self.___wxstr else self.___wxstr
+        clouds = " " + self.___clouds if self.___clouds else self.___clouds
         return (f"[{self.__type[0]}] {self.__icao} day {self.__datetime[0]:02d} at {self.__datetime[1]:02d}:{self.__datetime[2]:02d} UTC: " +
                 f"{wd} {wi} {self.__wspd:<2d} " +
                 f"{self.__tc:+03d}/{self.__tdc:+03d} {humid:2.0f}% " +
                 f"{self.__altunit}{self.__altval}" +
-                f"{clouds}{wx}")
+                f"{wx}{clouds}")
 
     def __repr__(self) -> str:
         return str(self)
