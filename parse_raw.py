@@ -127,7 +127,7 @@ metar_regex = re.compile(r"^" +
     # [12?] => RVR string
     r"((?:\s+R\d{1,2}[LCR]?\/[MP]?\d{4}(?:V\d{4})?[DNU]?)*)" +
     # [13?] => weather string
-   rf"((?:\s+[\-\+]?(?:{wxs}){{1,2}})*)" +
+   rf"((?:\s+[\-\+]?(?:{wxs})+)*)" +
     # [14?] => cloud string
     r"((?:\s+(?:(?:FEW|SCT|BKN|OVC|VV)(?:\d{3}(?:TCU|CB)?(?:\/{3})?|\/{3})|\/{2}|CAVOK|SKC|NCD|CLR|NSC))*)" +
     # [15?,16,17?,18] => temperature and dew point
