@@ -137,7 +137,9 @@ metar_regex = re.compile(r"^" +
     # [22?] => recent most significant weather
    rf"(?:\s+(RE(?:{wxs})))?" +
     # [23?] => windshear string
-    r"((?:\s+WS\s+R\d{1,2}[LCR]?)*)")
+    r"((?:\s+WS\s+R\d{1,2}[LCR]?)*)" +
+    # [24?] => runway friction string
+    r"((?:\s+R\d{1,2}[LCR]?\/(?:CLRD|\d{4})\d{2})*)")
 
 
 def metar_parse(metar: str) -> tuple[str, ...]:
@@ -185,6 +187,7 @@ class Metar:
 
         self.___rewx = parsed[22]
         # self.___ws = parsed[23].lstrip()
+        # self.___friction = parsed[24].lstrip()
 
     @property
     def raw(self) -> str:
