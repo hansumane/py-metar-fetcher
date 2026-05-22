@@ -83,9 +83,7 @@ class Deg:
 
 
 def fmt_wind_dir(_wdir: str, wspd: int) -> tuple[str, str]:
-    if wspd == 0:
-        return _wdir, " "
-    if _wdir == "VRB":
+    if wspd == 0 or _wdir in ("VRB", "///"):
         return _wdir, " "
 
     deg_rng = 360 / 8
@@ -119,7 +117,7 @@ metar_regex = re.compile(r"^" +
     # [5] => auto metar flag (not used)
     r"(?:\s+(AUTO))?" +
     # [6,7,8?,9] => wind direction, speed, gusts, units
-    r"\s+(\d{3}|VRB)(\d{2})(?:G(\d{2}))?(MPS|KT)" +
+    r"\s+([\d\/]{3}|VRB)([\d\/]{2})(?:G(\d{2}))?(MPS|KT)" +
     # [10?,11?] => variable wind directions
     r"(?:\s+(\d{3})V(\d{3}))?" +
     # [12?] => visibility
@@ -165,8 +163,12 @@ class Metar:
         self.__datetime = (int(parsed[2]), int(parsed[3]), int(parsed[4]))
         self.___auto = parsed[5]
 
-        self.__wdir = parsed[6]       # 3-digit int or "VRB"
-        self.__wspd = int(parsed[7])  # 2-digit int
+        self.__wdir = parsed[6]
+        if parsed[7] == "//":
+            self.__wspd = -1
+        else:
+            self.__wspd = int(parsed[7])
+
         # self.___wgust = parsed[8]   # 2-digit int or
         self.__wunit = parsed[9]      # "MPS" or "KT"
         # self.___wdir_var = (int(parsed[10]), int(parsed[11]))
@@ -196,12 +198,13 @@ class Metar:
     def __str__(self) -> str:
         auto = "A" if self.___auto else " "
         wd, wi = fmt_wind_dir(self.__wdir, self.__wspd)
+        ws = "//" if self.__wspd < 0 else f"{self.__wspd:<2d}"
         humid = 99.0 if self.__humid >= 99.0 else self.__humid
         wx = " " + self.___wxstr if self.___wxstr else self.___wxstr
         rewx = " " + self.___rewx if self.___rewx else self.___rewx
         clouds = " " + self.___clouds if self.___clouds else self.___clouds
         return (f"[{self.__type[0]}{auto}] {self.__icao} day {self.__datetime[0]:02d} at {self.__datetime[1]:02d}:{self.__datetime[2]:02d} UTC: " +
-                f"{wd} {wi} {self.__wspd:<2d} " +
+                f"{wd} {wi} {ws} " +
                 f"{self.__tc:+03d}/{self.__tdc:+03d} {humid:2.0f}% " +
                 f"{self.__altunit}{self.__altval}" +
                 f"{wx}{rewx}{clouds}")
