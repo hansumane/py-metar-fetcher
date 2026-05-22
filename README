@@ -10,6 +10,7 @@ TODO:
   * --timezone="UTC"
 * Further parsing
   * ... Q1013 | RETS | WS R06R WS R06C | R06R/CLRD62 R06C/CLRD62 | NOSIG / TEMPO VRB05G10MPS 5000 -TSRA HZ BKN044CB
+  * ... Q1013 | BECMG FEW008 BKN015
 
 Intensity       -    Light intensity
 Intensity       +    Heavy intensity
