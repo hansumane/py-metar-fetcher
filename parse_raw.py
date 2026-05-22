@@ -134,7 +134,9 @@ metar_regex = re.compile(r"^" +
     r"\s+(?:(M?)(\d{2})\/(M?)(\d{2}))" +
     # [20, 21] => pressure
     r"\s+(?:(Q|A)(\d{4}))" +
-    # [22?] => windshear
+    # [22?] => recent most significant weather
+   rf"(?:\s+(RE(?:{wxs})))?" +
+    # [23?] => windshear
     r"(?:\s+(WS\s+R\d{1,2}[LCR]?))?")
 
 
@@ -181,7 +183,8 @@ class Metar:
         self.__altunit = parsed[20]
         self.__altval = parsed[21]
 
-        # self.___ws = parsed[22]
+        self.___rewx = parsed[22]
+        # self.___ws = parsed[23]
 
     @property
     def raw(self) -> str:
@@ -192,12 +195,13 @@ class Metar:
         wd, wi = fmt_wind_dir(self.__wdir, self.__wspd)
         humid = 99.0 if self.__humid >= 99.0 else self.__humid
         wx = " " + self.___wxstr if self.___wxstr else self.___wxstr
+        rewx = " " + self.___rewx if self.___rewx else self.___rewx
         clouds = " " + self.___clouds if self.___clouds else self.___clouds
         return (f"[{self.__type[0]}{auto}] {self.__icao} day {self.__datetime[0]:02d} at {self.__datetime[1]:02d}:{self.__datetime[2]:02d} UTC: " +
                 f"{wd} {wi} {self.__wspd:<2d} " +
                 f"{self.__tc:+03d}/{self.__tdc:+03d} {humid:2.0f}% " +
                 f"{self.__altunit}{self.__altval}" +
-                f"{wx}{clouds}")
+                f"{wx}{rewx}{clouds}")
 
     def __repr__(self) -> str:
         return str(self)
