@@ -10,7 +10,7 @@ import urllib.parse
 import urllib.request
 
 from typing import Any
-from metar_parser import Metar
+from metar_parser import Metar, BadMetarError
 
 
 def get_metar(airports: list[str], verbose=None) -> list[dict[str, Any]]:
@@ -66,7 +66,7 @@ def main(airports: list[str]):
         for raw_metar in new_processed_metars:
             try:
                 print(str(Metar(raw_metar)))
-            except ValueError as e:
+            except BadMetarError as e:
                 print(f"ERROR: {e}")
             processed_raw_metars.add(raw_metar)
         if len(new_processed_metars) > 0:

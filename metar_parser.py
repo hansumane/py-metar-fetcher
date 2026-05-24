@@ -1,5 +1,6 @@
 __all__ = [
     "Metar",
+    "BadMetarError",
 ]
 
 
@@ -47,11 +48,14 @@ metar_regex = re.compile(r"^" +
     # [24?] => runway friction string
     r"((?:\s+R\d{1,2}[LCR]?\/(?:CLRD|\d{4})\d{2})*)")
 
+class BadMetarError(ValueError):
+    pass
+
 
 def metar_parse(metar: str) -> tuple[str, ...]:
     matches = metar_regex.findall(metar)
     if len(matches) != 1:
-        raise ValueError(f"Bad METAR/SPECI: '{metar}'")
+        raise BadMetarError(f"Bad METAR/SPECI: '{metar}'")
     return matches[0]
 
 
