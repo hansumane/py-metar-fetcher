@@ -15,7 +15,10 @@ except ImportError:
     print("Warning: Using 're' instead of 'pyre2'", file=stderr)
 
 
+wind_regex = r"\s+([\d\/]{3}|VRB)([\d\/]{2})(?:G(\d{2}))?(MPS|KT)"
 wxs = "VC|RE|MI|PR|BC|DR|BL|SH|TS|FZ|DZ|RA|SN|SG|GS|GR|PL|IC|UP|FG|BR|HZ|VA|DU|FU|SA|PY|SQ|PO|DS|SS|FC"
+weather_regex = rf"((?:\s+[\-\+]?(?:{wxs})+)*)"
+cloud_regex = r"((?:\s+(?:(?:FEW|SCT|BKN|OVC|VV)(?:\d{3}(?:TCU|CB)?(?:\/{3})?|\/{3})|\/{2}|CAVOK|SKC|NCD|CLR|NSC))*)"
 metar_regex = re.compile(r"^" +
     # [0] => type
     r"(METAR|SPECI)" +
@@ -26,7 +29,7 @@ metar_regex = re.compile(r"^" +
     # [5] => auto metar flag (not used)
     r"(?:\s+(AUTO))?" +
     # [6,7,8?,9] => wind direction, speed, gusts, units
-    r"\s+([\d\/]{3}|VRB)([\d\/]{2})(?:G(\d{2}))?(MPS|KT)" +
+    wind_regex +
     # [10?,11?] => variable wind directions
     r"(?:\s+(\d{3})V(\d{3}))?" +
     # [12?] => visibility
@@ -34,9 +37,9 @@ metar_regex = re.compile(r"^" +
     # [13?] => RVR string
     r"((?:\s+R\d{1,2}[LCR]?\/[MP]?\d{4}(?:V\d{4})?[DNU]?)*)" +
     # [14?] => weather string
-   rf"((?:\s+[\-\+]?(?:{wxs})+)*)" +
+    weather_regex +
     # [15?] => cloud string
-    r"((?:\s+(?:(?:FEW|SCT|BKN|OVC|VV)(?:\d{3}(?:TCU|CB)?(?:\/{3})?|\/{3})|\/{2}|CAVOK|SKC|NCD|CLR|NSC))*)" +
+    cloud_regex +
     # [16?,17,18?,19] => temperature and dew point
     r"\s+(?:(M?)(\d{2})\/(M?)(\d{2}))" +
     # [20, 21] => pressure
@@ -46,7 +49,20 @@ metar_regex = re.compile(r"^" +
     # [23?] => windshear string
     r"((?:\s+WS\s+R\d{1,2}[LCR]?)*)" +
     # [24?] => runway friction string
-    r"((?:\s+R\d{1,2}[LCR]?\/(?:CLRD|\d{4})\d{2})*)")
+    r"((?:\s+R\d{1,2}[LCR]?\/(?:CLRD|\d{4})\d{2})*)" +
+    # [25]? => trend group
+    r"(?:\s+(TEMPO|BECMG)" +
+        # [26?,27?,28?] => from, until, at
+        r"(?:(?:\s+FM(\d{4}))?\s+TL(\d{4})|\s+AT(\d{4}))?" +
+        # [29,30,31?,32]? => wind direction, speed, gusts, units
+       rf"(?:{wind_regex})?" +
+        # [33?] => visibility (simple)
+        r"(?:\s+(\d{4}))?" +
+        # [34?] => weather string
+        weather_regex +
+        # [35?] => cloud string
+        cloud_regex +
+    r")?")
 
 class BadMetarError(ValueError):
     pass
@@ -117,6 +133,12 @@ def fmt_wind_dir(_wdir: str, wspd: int) -> tuple[str, str]:
     raise ValueError(f"{wdir = } is wrong")
 
 
+def fmt_wx_clouds(main: str, tempo: str, type: str) -> str:
+    for part in tempo.split():
+        main += f" {type[0]}:{part}"
+    return main.lstrip()
+
+
 class Metar:
 
     def __init__(self, metar: str):
@@ -156,6 +178,22 @@ class Metar:
         # self.___ws = parsed[23].lstrip()
         # self.___friction = parsed[24].lstrip()
 
+        self.___trend = {
+            "type": parsed[25],
+            "_from": parsed[26],
+            "_until": parsed[27],
+            "_at": parsed[28],
+            "_wind": {
+                "wdir": parsed[29],
+                "wspd": parsed[30],
+                "_wgust": parsed[31],
+                "wunit": parsed[32]
+            },
+            "_vis": parsed[33],
+            "_wxstr": parsed[34].lstrip(),
+            "_clouds": parsed[35].lstrip(),
+        }
+
     @property
     def raw(self) -> str:
         return self.__raw
@@ -165,9 +203,11 @@ class Metar:
         wd, wi = fmt_wind_dir(self.__wdir, self.__wspd)
         ws = "//" if self.__wspd < 0 else f"{self.__wspd:<2d}"
         humid = 99.0 if self.__humid >= 99.0 else self.__humid
-        wx = " " + self.___wxstr if self.___wxstr else self.___wxstr
+        wx = fmt_wx_clouds(self.___wxstr, self.___trend["_wxstr"], self.___trend["type"])
+        wx = " " + wx if wx else wx
         rewx = " RE:" + self.___rewx if self.___rewx else self.___rewx
-        clouds = " " + self.___clouds if self.___clouds else self.___clouds
+        clouds = fmt_wx_clouds(self.___clouds, self.___trend["_clouds"], self.___trend["type"])
+        clouds = " " + clouds if clouds else clouds
         return (f"[{self.__type[0]}{auto}] {self.__icao} " +
                 f"day {self.__datetime[0]:02d} at {self.__datetime[1]:02d}:{self.__datetime[2]:02d} UTC: " +
                 f"{wd} {wi} {ws} " +
