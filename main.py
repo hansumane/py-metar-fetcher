@@ -4,6 +4,7 @@ import os
 import sys
 import json
 import time
+import signal
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -51,6 +52,7 @@ def main(airports: list[str]):
     verbose = None
     processed_raw_metars = set()
     while True:
+        old_handler = signal.signal(signal.SIGINT, signal.SIG_IGN)
         new_processed_metars = []
         while len(metars := get_metar(airports, verbose=verbose)) != len(airports):
             pass
@@ -69,7 +71,11 @@ def main(airports: list[str]):
             processed_raw_metars.add(raw_metar)
         if len(new_processed_metars) > 0:
             print()
-        time.sleep(2 * 60)
+        try:
+            signal.signal(signal.SIGINT, old_handler)
+            time.sleep(2 * 60)
+        except KeyboardInterrupt:
+            break
 
 
 if __name__ == "__main__":
