@@ -42,7 +42,7 @@ metar_regex = re.compile(r"^" +
     # [20, 21] => pressure
     r"\s+(?:(Q|A)(\d{4}))" +
     # [22?] => recent most significant weather
-   rf"(?:\s+(RE(?:{wxs})))?" +
+   rf"(?:\s+RE({wxs}))?" +
     # [23?] => windshear string
     r"((?:\s+WS\s+R\d{1,2}[LCR]?)*)" +
     # [24?] => runway friction string
@@ -166,7 +166,7 @@ class Metar:
         ws = "//" if self.__wspd < 0 else f"{self.__wspd:<2d}"
         humid = 99.0 if self.__humid >= 99.0 else self.__humid
         wx = " " + self.___wxstr if self.___wxstr else self.___wxstr
-        rewx = " " + self.___rewx if self.___rewx else self.___rewx
+        rewx = " RE:" + self.___rewx if self.___rewx else self.___rewx
         clouds = " " + self.___clouds if self.___clouds else self.___clouds
         return (f"[{self.__type[0]}{auto}] {self.__icao} " +
                 f"day {self.__datetime[0]:02d} at {self.__datetime[1]:02d}:{self.__datetime[2]:02d} UTC: " +
