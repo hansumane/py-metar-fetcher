@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import os
 import sys
 import json
 import time
@@ -10,6 +9,7 @@ import urllib.parse
 import urllib.request
 
 from typing import Any
+from os import linesep as nl
 from metar_parser import Metar, BadMetarError
 
 
@@ -29,7 +29,7 @@ def get_metar(airports: list[str], verbose=None) -> list[dict[str, Any]]:
         with urllib.request.urlopen(req) as resp:
             metars = json.load(resp)
     except urllib.error.HTTPError as e:
-        print(f"Failed API Request: {e}", file=sys.stderr, end=f"{os.linesep * 2}")
+        print(f"Failed API Request: {e}", file=sys.stderr, end=f"{nl * 2}")
         return []
 
     if verbose is True:
