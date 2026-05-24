@@ -5,6 +5,8 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+from os import linesep as nl
+
 
 def get_metar_tafs(airports: list[str]) -> str:
     query = urllib.parse.urlencode({
@@ -28,7 +30,7 @@ def get_metar_tafs(airports: list[str]) -> str:
 def main(airports: list[str]):
     while not (metar_tafs := get_metar_tafs(airports)):
         pass
-    print(metar_tafs)
+    print(f"{nl}{metar_tafs}{nl}")
 
 
 if __name__ == "__main__":
