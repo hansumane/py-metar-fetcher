@@ -9,6 +9,7 @@ import urllib.request
 def get_metar_tafs(airports: list[str]) -> str:
     query = urllib.parse.urlencode({
         "ids": ",".join(a.upper() for a in airports),
+        "sep": 1,
         "taf": 1
     })
 
