@@ -64,6 +64,7 @@ metar_regex = re.compile(r"^" +
         cloud_regex +
     r")?")
 
+
 class BadMetarError(ValueError):
     pass
 
