@@ -17,8 +17,8 @@ except ImportError:
 
 wind_regex = r"\s+([\d\/]{3}|VRB)([\d\/]{2})(?:G(\d{2}))?(MPS|KT)"
 wxs = "VC|RE|MI|PR|BC|DR|BL|SH|TS|FZ|DZ|RA|SN|SG|GS|GR|PL|IC|UP|FG|BR|HZ|VA|DU|FU|SA|PY|SQ|PO|DS|SS|FC"
-weather_regex = rf"((?:\s+[\-\+]?(?:{wxs})+)*)"
-cloud_regex = r"((?:\s+(?:(?:FEW|SCT|BKN|OVC|VV)(?:\d{3}(?:TCU|CB)?(?:\/{3})?|\/{3})|\/{2}|CAVOK|SKC|NCD|CLR|NSC))*)"
+weather_regex = rf"((?:\s+[\-\+]?(?:{wxs})+)*|\s+\/{{2}})"
+cloud_regex = r"((?:\s+(?:(?:FEW|SCT|BKN|OVC|VV|\/{3})(?:\d{3}(?:TCU|CB|\/{3})?|\/{3})|CAVOK|SKC|NCD|CLR|NSC))*)"
 metar_regex = re.compile(r"^" +
     # [0] => type
     r"(METAR|SPECI)" +
@@ -33,7 +33,7 @@ metar_regex = re.compile(r"^" +
     # [10?,11?] => variable wind directions
     r"(?:\s+(\d{3})V(\d{3}))?" +
     # [12?] => visibility
-    r"(?:\s+(\d{4}(?:\s+\d{4}(?:N|NE|E|SE|S|SW|W|NW))*|(?:\d{1,2}\s+)?\d{1,2}(?:\/[24])?SM))?" +
+    r"(?:\s+([\d\/]{4}(?:\s+\d{4}(?:N|NE|E|SE|S|SW|W|NW))*|(?:\d{1,2}\s+)?\d{1,2}(?:\/[24])?SM))?" +
     # [13?] => RVR string
     r"((?:\s+R\d{1,2}[LCR]?\/[MP]?\d{4}(?:V[MP]?\d{4})?(?:[DNU]|FT)?)*)" +
     # [14?] => weather string
