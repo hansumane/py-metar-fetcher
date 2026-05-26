@@ -213,7 +213,7 @@ class Metar:
         return (f"[{self.__type[0]}{mod}] {self.__icao} " +
                 f"day {self.__datetime[0]:02d} at {self.__datetime[1]:02d}:{self.__datetime[2]:02d} UTC: " +
                 f"{wd} {wi} {ws} " +
-                f"{self.__tc:+03d}/{self.__tdc:+03d} {humid:2.0f}% " +
+                f"{self.__tc:>+3d}/{self.__tdc:<+3d} {humid:2.0f}% " +
                 f"{self.__altunit}{self.__altval}" +
                 f"{wx}{rewx}{clouds}")
 
