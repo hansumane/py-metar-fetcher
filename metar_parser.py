@@ -27,7 +27,7 @@ metar_regex = re.compile(r"^" +
     # [2,3,4] => UTC day, hour, minutes
     r"\s+(\d{2})(\d{2})(\d{2})Z" +
     # [5] => auto metar flag (not used)
-    r"(?:\s+(AUTO))?" +
+    r"(?:\s+(AUTO|COR))?" +
     # [6,7,8?,9] => wind direction, speed, gusts, units
     wind_regex +
     # [10?,11?] => variable wind directions
@@ -149,7 +149,8 @@ class Metar:
         self.__type = parsed[0]
         self.__icao = parsed[1]
         self.__datetime = (int(parsed[2]), int(parsed[3]), int(parsed[4]))
-        self.___auto = parsed[5]
+
+        self.___modifier = parsed[5]
 
         self.__wdir = parsed[6]
         if parsed[7] == "//":
@@ -200,7 +201,7 @@ class Metar:
         return self.__raw
 
     def __str__(self) -> str:
-        auto = "A" if self.___auto else " "
+        mod = self.___modifier[0] if self.___modifier else " "
         wd, wi = fmt_wind_dir(self.__wdir, self.__wspd)
         ws = "//" if self.__wspd < 0 else f"{self.__wspd:<2d}"
         humid = 99.0 if self.__humid >= 99.0 else self.__humid
@@ -209,7 +210,7 @@ class Metar:
         rewx = " RE:" + self.___rewx if self.___rewx else self.___rewx
         clouds = fmt_wx_clouds(self.___clouds, self.___trend["_clouds"], self.___trend["type"])
         clouds = " " + clouds if clouds else clouds
-        return (f"[{self.__type[0]}{auto}] {self.__icao} " +
+        return (f"[{self.__type[0]}{mod}] {self.__icao} " +
                 f"day {self.__datetime[0]:02d} at {self.__datetime[1]:02d}:{self.__datetime[2]:02d} UTC: " +
                 f"{wd} {wi} {ws} " +
                 f"{self.__tc:+03d}/{self.__tdc:+03d} {humid:2.0f}% " +
