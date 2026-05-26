@@ -4,15 +4,8 @@ __all__ = [
 ]
 
 
+import re
 from math import exp
-from sys import stderr
-
-
-try:
-    import re2 as re
-except ImportError:
-    import re
-    print("Warning: Using 're' instead of 'pyre2'", file=stderr)
 
 
 wind_regex = r"\s+([\d\/]{3}|VRB)([\d\/]{2})(?:G(\d{2}))?(MPS|KT)"
