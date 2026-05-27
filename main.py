@@ -28,7 +28,7 @@ def get_metar(airports: list[str], verbose=None) -> list[dict[str, Any]]:
     try:
         with urllib.request.urlopen(req) as resp:
             metars = json.load(resp)
-    except urllib.error.HTTPError as e:
+    except (urllib.error.HTTPError, urllib.error.URLError) as e:
         print(f"Failed API Request: {e}", file=sys.stderr, end=f"{nl * 2}")
         return []
 
