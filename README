@@ -14,6 +14,8 @@ FIXME:
 * Bad METAR/SPECI: 'METAR HKJK 221600Z FEW022CB SCT080 21/16 Q1023 NOSIG'
   * the wind group is optional (?!)
 
+This following table is based on content from the Wikipedia article "METAR"
+
 Intensity       -    Light intensity
 Intensity       +    Heavy intensity
 Descriptor      VC   In the vicinity (5–10 mi / 8–16 km from station)
@@ -48,3 +50,5 @@ Other           PO   Dust [French: Poussière] or sand whirls
 Other           DS   Duststorm
 Other           SS   Sandstorm
 Other           FC   Funnel cloud
+
+Modifications made: Simplified descriptions
