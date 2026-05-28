@@ -28,7 +28,7 @@ metar_regex = re.compile(r"^" +
     # [12?] => visibility string
     r"(?:\s+([\d\/]{4}(?:\s+\d{4}(?:N|NE|E|SE|S|SW|W|NW))*|(?:\d{1,2}\s+)?\d{1,2}(?:\/[24])?SM))?" +
     # [13?] => RVR string
-    r"((?:\s+R\d{1,2}[LCR]?\/[MP]?\d{4}(?:V[MP]?\d{4})?(?:[DNU]|FT)?)*)" +
+    r"((?:\s+R\d{1,2}[LCR]?\/[MP]?\d{4}[DNU]?(?:V[MP]?\d{4}[DNU]?)?(?:FT)?)*)" +
     # [14?] => weather string
     weather_regex +
     # [15?] => cloud string
