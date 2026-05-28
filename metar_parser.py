@@ -148,7 +148,8 @@ class Metar:
         self.___modifier = parsed[5]
 
         self.__wdir = parsed[6]
-        if parsed[7] == "//":
+        self.__wspd = parsed[7]
+        if self.__wspd == "//":
             self.__wspd = -1
         else:
             self.__wspd = int(parsed[7])
