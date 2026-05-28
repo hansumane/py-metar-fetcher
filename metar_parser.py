@@ -38,7 +38,7 @@ metar_regex = re.compile(r"^" +
     # [20, 21] => pressure
     r"\s+(?:(Q|A)(\d{4}))" +
     # [22?] => recent most significant weather
-   rf"(?:\s+RE({wxs}))?" +
+   rf"(?:\s+RE((?:{wxs})+))?" +
     # [23?] => windshear string
     r"((?:\s+WS\s+R\d{1,2}[LCR]?)*)" +
     # [24?] => runway friction string
