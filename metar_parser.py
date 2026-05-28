@@ -19,7 +19,7 @@ metar_regex = re.compile(r"^" +
     r"\s+([A-Z]{4})" +
     # [2,3,4] => UTC day, hour, minutes
     r"\s+(\d{2})(\d{2})(\d{2})Z" +
-    # [5] => auto metar flag (not used)
+    # [5] => modifier flag
     r"(?:\s+(AUTO|COR))?" +
     # [6,7,8?,9] => wind direction, speed, gusts, units
     wind_regex +
