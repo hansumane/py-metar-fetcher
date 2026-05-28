@@ -13,6 +13,9 @@ TODO:
 FIXME:
 * Bad METAR/SPECI: 'METAR HKJK 221600Z FEW022CB SCT080 21/16 Q1023 NOSIG'
   * the wind group is optional (?!)
+* WS ALL RWY is not parsed
+  * I've never seen it in a real METAR yet. maybe it goes to the RMK
+    section, which is not parsed yet
 
 This following table is based on content from the Wikipedia article "METAR"
 
