@@ -128,6 +128,8 @@ def fmt_wind_dir(_wdir: str, wspd: int) -> tuple[str, str]:
 
 
 def fmt_wx_clouds(main: str, tempo: str, type: str) -> str:
+    if main == "CAVOK":
+        main = ""
     for part in tempo.split():
         main += f" {type[0]}:{part}"
     return main.lstrip()
